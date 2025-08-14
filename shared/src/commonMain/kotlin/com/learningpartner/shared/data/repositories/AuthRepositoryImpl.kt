@@ -3,13 +3,13 @@ package com.learningpartner.shared.data.repositories
 import com.learningpartner.shared.data.api.AuthApi
 import com.learningpartner.shared.domain.models.User
 import com.learningpartner.shared.domain.repositories.AuthRepository
-import com.russhwolf.multiplatformsettings.MultiplatformSettings
+import com.russhwolf.settings.Settings
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class AuthRepositoryImpl(
     private val authApi: AuthApi,
-    private val settings: MultiplatformSettings
+    private val settings: Settings
 ) : AuthRepository {
     
     private val json = Json { ignoreUnknownKeys = true }
@@ -35,7 +35,7 @@ class AuthRepositoryImpl(
     }
     
     override suspend fun getCurrentUser(): User? {
-        val userJson = settings.getString("current_user", null)
+        val userJson = settings.getStringOrNull("current_user")
         return userJson?.let { json.decodeFromString<User>(it) }
     }
     

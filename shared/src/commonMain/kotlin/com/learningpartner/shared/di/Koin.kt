@@ -6,7 +6,7 @@ import com.learningpartner.shared.data.repositories.AuthRepositoryImpl
 import com.learningpartner.shared.data.repositories.StudentRepositoryImpl
 import com.learningpartner.shared.domain.repositories.AuthRepository
 import com.learningpartner.shared.domain.repositories.StudentRepository
-import com.russhwolf.multiplatformsettings.MultiplatformSettings
+import com.russhwolf.settings.Settings
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
@@ -19,7 +19,7 @@ fun initKoin(appDeclaration: KoinAppDeclaration = {}) =
 
 val sharedModule = module {
     // Settings
-    single<MultiplatformSettings> { MultiplatformSettings() }
+    single<Settings> { Settings() }
     
     // API
     single { AuthApi() }

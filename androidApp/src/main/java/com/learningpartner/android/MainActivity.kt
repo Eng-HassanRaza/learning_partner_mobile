@@ -7,15 +7,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import com.learningpartner.android.di.androidModule
 import com.learningpartner.android.ui.App
 import com.learningpartner.shared.di.initKoin
+import org.koin.android.ext.koin.androidContext
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
         // Initialize Koin
-        initKoin()
+        initKoin {
+            androidContext(this@MainActivity)
+            modules(androidModule)
+        }
         
         setContent {
             MaterialTheme {

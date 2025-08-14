@@ -2,7 +2,7 @@ package com.learningpartner.shared.data.api
 
 import com.learningpartner.shared.domain.models.User
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
+import io.ktor.client.call.*
 import io.ktor.http.*
 
 class AuthApi {
@@ -10,7 +10,7 @@ class AuthApi {
     private val baseUrl = ApiClient.getBaseUrl()
     
     suspend fun login(username: String, password: String): User {
-        val response = client.post("${baseUrl}auth/") {
+        return client.post("${baseUrl}auth/") {
             contentType(ContentType.Application.Json)
             setBody(
                 mapOf(
@@ -18,13 +18,10 @@ class AuthApi {
                     "password" to password
                 )
             )
-        }
-        
-        return client.body(response.bodyAsText())
+        }.body()
     }
     
     suspend fun logout(): String {
-        val response = client.delete("${baseUrl}auth/")
-        return response.bodyAsText()
+        return client.delete("${baseUrl}auth/").body()
     }
 } 
