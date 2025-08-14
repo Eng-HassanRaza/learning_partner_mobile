@@ -63,35 +63,37 @@ fun SessionSteps(title: String, content: SessionContent) {
 
         Divider()
 
-        when (steps[currentStep]) {
-            Step.Summary -> SummaryStep(
-                summary = content.summary,
-                onCompleted = { completed[0] = true }
-            )
-            Step.Vocabulary -> VocabularyStep(
-                items = content.vocabulary,
-                onCompleted = { completed[1] = true }
-            )
-            Step.Grammar -> GrammarStep(
-                tables = content.grammarTables,
-                onCompleted = { completed[2] = true }
-            )
-            Step.Flashcards -> FlashcardsStep(
-                cards = content.flashcards,
-                onCompleted = { completed[3] = true }
-            )
-            Step.Exercises -> ExercisesStep(
-                exercises = content.practiceExercises,
-                onCompleted = { completed[4] = true }
-            )
-            Step.Speaking -> SpeakingStep(
-                lines = content.speakingPractice,
-                onCompleted = { completed[5] = true }
-            )
-            Step.Final -> FinalQuizStep(
-                content = content,
-                onCompleted = { completed[6] = true }
-            )
+        Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+            when (steps[currentStep]) {
+                Step.Summary -> SummaryStep(
+                    summary = content.summary,
+                    onCompleted = { completed[0] = true }
+                )
+                Step.Vocabulary -> VocabularyStep(
+                    items = content.vocabulary,
+                    onCompleted = { completed[1] = true }
+                )
+                Step.Grammar -> GrammarStep(
+                    tables = content.grammarTables,
+                    onCompleted = { completed[2] = true }
+                )
+                Step.Flashcards -> FlashcardsStep(
+                    cards = content.flashcards,
+                    onCompleted = { completed[3] = true }
+                )
+                Step.Exercises -> ExercisesStep(
+                    exercises = content.practiceExercises,
+                    onCompleted = { completed[4] = true }
+                )
+                Step.Speaking -> SpeakingStep(
+                    lines = content.speakingPractice,
+                    onCompleted = { completed[5] = true }
+                )
+                Step.Final -> FinalQuizStep(
+                    content = content,
+                    onCompleted = { completed[6] = true }
+                )
+            }
         }
 
         Spacer(Modifier.height(8.dp))
@@ -115,7 +117,7 @@ fun SessionSteps(title: String, content: SessionContent) {
 @Composable
 private fun SummaryStep(summary: String, onCompleted: () -> Unit) {
     var paraphrase by rememberSaveable { mutableStateOf("") }
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxSize()) {
         Text("Summary", style = MaterialTheme.typography.titleMedium)
         Text(summary)
         OutlinedTextField(value = paraphrase, onValueChange = { paraphrase = it }, label = { Text("Write a one-sentence paraphrase") })
@@ -128,11 +130,11 @@ private fun SummaryStep(summary: String, onCompleted: () -> Unit) {
 private fun VocabularyStep(items: List<Vocabulary>, onCompleted: () -> Unit) {
     var viewed by rememberSaveable { mutableStateOf(0) }
     val target = minOf(5, items.size.coerceAtLeast(1))
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxSize()) {
         Text("Vocabulary", style = MaterialTheme.typography.titleMedium)
         Text("Browse items: $viewed/${items.size}. Review at least $target to continue.")
         Divider()
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.weight(1f, true)) {
+        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxSize()) {
             items(items, key = { it.id }) { v ->
                 Card { 
                     Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -153,10 +155,10 @@ private fun VocabularyStep(items: List<Vocabulary>, onCompleted: () -> Unit) {
 
 @Composable
 private fun GrammarStep(tables: List<GrammarTable>, onCompleted: () -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxSize()) {
         Text("Grammar", style = MaterialTheme.typography.titleMedium)
         Divider()
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.weight(1f, true)) {
+        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxSize()) {
             items(tables, key = { it.id }) { g ->
                 Card {
                     Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -185,7 +187,7 @@ private fun FlashcardsStep(cards: List<Flashcard>, onCompleted: () -> Unit) {
     var index by rememberSaveable { mutableStateOf(0) }
     var flipped by rememberSaveable { mutableStateOf(false) }
     val hasCards = cards.isNotEmpty()
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxSize()) {
         Text("Flashcards", style = MaterialTheme.typography.titleMedium)
         if (!hasCards) {
             Text("No flashcards")
@@ -231,7 +233,7 @@ private fun ExercisesStep(exercises: List<Exercise>, onCompleted: () -> Unit) {
         }
     }
 
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxSize()) {
         Text("Exercises", style = MaterialTheme.typography.titleMedium)
         if (!hasExercises) {
             Text("No exercises available")
@@ -269,11 +271,11 @@ private fun ExercisesStep(exercises: List<Exercise>, onCompleted: () -> Unit) {
 private fun SpeakingStep(lines: List<String>, onCompleted: () -> Unit) {
     val practiced = remember { mutableStateListOf<Boolean>().apply { repeat(lines.size) { add(false) } } }
     val completedCount = practiced.count { it }
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxSize()) {
         Text("Speaking Practice", style = MaterialTheme.typography.titleMedium)
         Text("Mark each line after you practice it. $completedCount/${lines.size}")
         Divider()
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.weight(1f, true)) {
+        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxSize()) {
             items(lines.indices.toList(), key = { it }) { i ->
                 Card {
                     Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -290,7 +292,7 @@ private fun SpeakingStep(lines: List<String>, onCompleted: () -> Unit) {
 
 @Composable
 private fun FinalQuizStep(content: SessionContent, onCompleted: () -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxSize()) {
         Text("Final Quiz", style = MaterialTheme.typography.titleMedium)
         Text("You can proceed for now. We'll connect to the quiz endpoint next.")
         Button(onClick = onCompleted) { Text("Finish Session") }
