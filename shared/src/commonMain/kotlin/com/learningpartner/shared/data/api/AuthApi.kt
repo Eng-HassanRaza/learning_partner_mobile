@@ -5,7 +5,6 @@ import io.ktor.client.request.*
 import io.ktor.client.call.*
 import io.ktor.http.*
 import io.ktor.client.plugins.logging.*
-import io.ktor.client.plugins.timeout.*
 
 class AuthApi {
     private val client = ApiClient.client
@@ -19,12 +18,7 @@ class AuthApi {
             // First, let's test if the base URL is reachable
             println("🌐 Testing connectivity to base URL...")
             try {
-                val testResponse = client.get(baseUrl) {
-                    timeout {
-                        requestTimeoutMillis = 5000
-                        connectTimeoutMillis = 5000
-                    }
-                }
+                val testResponse = client.get(baseUrl)
                 println("✅ Base URL is reachable, status: ${testResponse.status}")
             } catch (e: Exception) {
                 println("⚠️ Base URL connectivity test failed: ${e.message}")
@@ -32,10 +26,6 @@ class AuthApi {
             
             val response = client.post("${baseUrl}auth/") {
                 contentType(ContentType.Application.Json)
-                timeout {
-                    requestTimeoutMillis = 10000
-                    connectTimeoutMillis = 10000
-                }
                 setBody(
                     mapOf(
                         "username" to username,
@@ -67,12 +57,7 @@ class AuthApi {
     suspend fun testConnection(): String {
         return try {
             println("🌐 Testing connection to: $baseUrl")
-            val response = client.get(baseUrl) {
-                timeout {
-                    requestTimeoutMillis = 5000
-                    connectTimeoutMillis = 5000
-                }
-            }
+            val response = client.get(baseUrl)
             println("✅ Connection test successful, status: ${response.status}")
             "Connection successful - Status: ${response.status}"
         } catch (e: Exception) {
