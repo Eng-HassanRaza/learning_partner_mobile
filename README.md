@@ -98,6 +98,42 @@ The app connects to a Django backend with the following features:
 - **Xcode** (for iOS development, macOS only)
 - **Django Backend** running on `http://dashboard.localhost:8000/`
 
+## 🚀 GitHub Actions - Remote Building
+
+This project uses GitHub Actions for remote building and testing, allowing development on limited-resource machines.
+
+### Quick Start
+```bash
+# Local development (lightweight)
+./dev-build.sh
+
+# Push to trigger remote builds
+git add .
+git commit -m "Your changes"
+git push origin main
+```
+
+### What Gets Built Remotely
+- ✅ **Android APK** - Generated on every push
+- ✅ **iOS Framework** - Built on macOS runners
+- ✅ **All Tests** - Comprehensive testing
+- ✅ **Artifacts** - Downloadable build outputs
+
+### Benefits
+- **No local resource usage** for heavy builds
+- **Automatic testing** on every push
+- **APK generation** without Android Studio
+- **iOS framework building** without macOS
+- **Free** with GitHub's generous limits
+
+### Getting Your APK
+1. Go to your GitHub repository
+2. Click "Actions" tab
+3. Click on latest "Android Build & Test" run
+4. Download "android-debug-apk" from artifacts
+
+For detailed setup instructions, see [GITHUB_ACTIONS_GUIDE.md](GITHUB_ACTIONS_GUIDE.md).
+
 ### Getting Started
 
 1. **Clone the repository**
