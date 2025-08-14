@@ -16,10 +16,15 @@ class AuthRepositoryImpl(
     
     override suspend fun login(username: String, password: String): Result<User> {
         return try {
+            println("🔄 AuthRepository: Starting login process")
             val user = authApi.login(username, password)
+            println("💾 AuthRepository: Saving user to local storage")
             saveUser(user)
+            println("✅ AuthRepository: Login completed successfully")
             Result.success(user)
         } catch (e: Exception) {
+            println("❌ AuthRepository: Login failed with exception: ${e.message}")
+            e.printStackTrace()
             Result.failure(e)
         }
     }
@@ -30,6 +35,18 @@ class AuthRepositoryImpl(
             clearUser()
             Result.success(response)
         } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    
+    override suspend fun testConnection(): Result<String> {
+        return try {
+            println("🔗 AuthRepository: Testing connection...")
+            val response = authApi.testConnection()
+            println("✅ AuthRepository: Connection test successful")
+            Result.success(response)
+        } catch (e: Exception) {
+            println("❌ AuthRepository: Connection test failed: ${e.message}")
             Result.failure(e)
         }
     }

@@ -27,6 +27,7 @@ fun LoginScreen() {
     LaunchedEffect(error) {
         if (error != null) {
             // Show error snackbar or handle error
+            println("🚨 UI Error: $error")
         }
     }
     
@@ -93,13 +94,40 @@ fun LoginScreen() {
             }
         }
         
+        Spacer(modifier = Modifier.height(8.dp))
+        
+        OutlinedButton(
+            onClick = { authViewModel.testConnection() },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !isLoading
+        ) {
+            Text("🔧 Test Connection")
+        }
+        
         if (error != null) {
             Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = error!!,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodyMedium
-            )
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.errorContainer
+                )
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(
+                        text = "❌ Login Error:",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onErrorContainer
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = error!!,
+                        color = MaterialTheme.colorScheme.onErrorContainer,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+            }
         }
         
         Spacer(modifier = Modifier.height(16.dp))
@@ -130,6 +158,44 @@ fun LoginScreen() {
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+            }
+        }
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        // Debug info
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.secondaryContainer
+            )
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = "🔧 Debug Info:",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "API URL: https://cb64f97bbe57.ngrok-free.app/api/v1/",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+                Text(
+                    text = "Status: ${if (isLoading) "Loading..." else "Ready"}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+                if (error != null) {
+                    Text(
+                        text = "Last Error: ${error!!.take(50)}...",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
             }
         }
     }
