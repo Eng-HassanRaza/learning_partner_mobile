@@ -41,10 +41,10 @@ jobs:
       run: ./gradlew --version
       
     - name: Build iOS Framework (ARM64)
-      run: ./gradlew linkReleaseFrameworkIosArm64 --stacktrace
+      run: ./gradlew linkReleaseFrameworkIosArm64 -Penable.ios.targets=true --stacktrace
       
     - name: Build iOS Framework (Simulator ARM64)
-      run: ./gradlew linkReleaseFrameworkIosSimulatorArm64 --stacktrace
+      run: ./gradlew linkReleaseFrameworkIosSimulatorArm64 -Penable.ios.targets=true --stacktrace
       
     - name: Upload iOS Framework
       uses: actions/upload-artifact@v4

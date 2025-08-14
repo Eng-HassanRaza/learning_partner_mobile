@@ -9,15 +9,17 @@ plugins {
 kotlin {
     androidTarget()
     
-    // iOS targets - simplified configuration
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-    
-    // Configure framework for all iOS targets
-    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>().configureEach {
-        binaries.framework {
-            baseName = "shared"
+    // Conditionally enable iOS targets
+    if (project.findProperty("enable.ios.targets") == "true") {
+        iosX64()
+        iosArm64()
+        iosSimulatorArm64()
+        
+        // Configure framework for all iOS targets
+        targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>().configureEach {
+            binaries.framework {
+                baseName = "shared"
+            }
         }
     }
 
@@ -85,27 +87,30 @@ kotlin {
             }
         }
         
-        val iosX64Main by getting
-        val iosArm64Main by getting
-        val iosSimulatorArm64Main by getting
-        val iosMain by creating {
-            dependsOn(commonMain)
-            iosX64Main.dependsOn(this)
-            iosArm64Main.dependsOn(this)
-            iosSimulatorArm64Main.dependsOn(this)
-            dependencies {
-                implementation("io.ktor:ktor-client-darwin:$ktorVersion")
+        // Only create iOS source sets if iOS targets are enabled
+        if (project.findProperty("enable.ios.targets") == "true") {
+            val iosX64Main by getting
+            val iosArm64Main by getting
+            val iosSimulatorArm64Main by getting
+            val iosMain by creating {
+                dependsOn(commonMain)
+                iosX64Main.dependsOn(this)
+                iosArm64Main.dependsOn(this)
+                iosSimulatorArm64Main.dependsOn(this)
+                dependencies {
+                    implementation("io.ktor:ktor-client-darwin:$ktorVersion")
+                }
             }
-        }
-        
-        val iosX64Test by getting
-        val iosArm64Test by getting
-        val iosSimulatorArm64Test by getting
-        val iosTest by creating {
-            dependsOn(commonTest)
-            iosX64Test.dependsOn(this)
-            iosArm64Test.dependsOn(this)
-            iosSimulatorArm64Test.dependsOn(this)
+            
+            val iosX64Test by getting
+            val iosArm64Test by getting
+            val iosSimulatorArm64Test by getting
+            val iosTest by creating {
+                dependsOn(commonTest)
+                iosX64Test.dependsOn(this)
+                iosArm64Test.dependsOn(this)
+                iosSimulatorArm64Test.dependsOn(this)
+            }
         }
     }
 }

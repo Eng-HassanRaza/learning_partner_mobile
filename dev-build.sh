@@ -1,13 +1,18 @@
 #!/bin/bash
 
-echo "🚀 Starting lightweight development build..."
+# Lightweight development build script
+# This script runs only essential tasks for local development
 
-# Run only essential tasks for local development
-./gradlew clean --stacktrace
-./gradlew shared:compileKotlinMetadata --stacktrace
-./gradlew androidApp:compileDebugKotlin --stacktrace
-./gradlew test --stacktrace
+echo "🧹 Cleaning project..."
+./gradlew clean -Penable.ios.targets=false --stacktrace
 
-echo "✅ Development build completed!"
-echo "📱 For full builds, check GitHub Actions"
-echo "🔗 Push to GitHub to trigger remote builds" 
+echo "📦 Compiling shared module (Android target only)..."
+./gradlew shared:compileDebugKotlinAndroid -Penable.ios.targets=false --stacktrace
+
+echo "🤖 Compiling Android app..."
+./gradlew androidApp:compileDebugKotlin -Penable.ios.targets=false --stacktrace
+
+echo "🧪 Running tests..."
+./gradlew test -Penable.ios.targets=false --stacktrace
+
+echo "✅ Development build completed!" 

@@ -41,13 +41,13 @@ jobs:
       run: ./gradlew --version
       
     - name: Build Android only
-      run: ./gradlew androidApp:assembleDebug --stacktrace
+      run: ./gradlew androidApp:assembleDebug -Penable.ios.targets=false --stacktrace
       
     - name: Run Android tests
-      run: ./gradlew androidApp:test --stacktrace
+      run: ./gradlew androidApp:test -Penable.ios.targets=false --stacktrace
       
     - name: Build shared module (Android target only)
-      run: ./gradlew shared:compileDebugKotlinAndroid --stacktrace
+      run: ./gradlew shared:compileDebugKotlinAndroid -Penable.ios.targets=false --stacktrace
       
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
