@@ -63,50 +63,35 @@ fun SessionSteps(title: String, content: SessionContent) {
 
         Divider()
 
-        // Render step content safely
-        val renderStep: @Composable () -> Unit = @Composable {
-            when (steps[currentStep]) {
-                Step.Summary -> SummaryStep(
-                    summary = content.summary,
-                    onCompleted = { completed[0] = true }
-                )
-                Step.Vocabulary -> VocabularyStep(
-                    items = content.vocabulary,
-                    onCompleted = { completed[1] = true }
-                )
-                Step.Grammar -> GrammarStep(
-                    tables = content.grammarTables,
-                    onCompleted = { completed[2] = true }
-                )
-                Step.Flashcards -> FlashcardsStep(
-                    cards = content.flashcards,
-                    onCompleted = { completed[3] = true }
-                )
-                Step.Exercises -> ExercisesStep(
-                    exercises = content.practiceExercises,
-                    onCompleted = { completed[4] = true }
-                )
-                Step.Speaking -> SpeakingStep(
-                    lines = content.speakingPractice,
-                    onCompleted = { completed[5] = true }
-                )
-                Step.Final -> FinalQuizStep(
-                    content = content,
-                    onCompleted = { completed[6] = true }
-                )
-            }
-        }
-
-        try {
-            renderStep()
-        } catch (t: Throwable) {
-            // Fallback UI instead of crashing
-            Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)) {
-                Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text("Something went wrong rendering this step.", color = MaterialTheme.colorScheme.onErrorContainer)
-                    Text("${t::class.simpleName}: ${t.message}", color = MaterialTheme.colorScheme.onErrorContainer)
-                }
-            }
+        when (steps[currentStep]) {
+            Step.Summary -> SummaryStep(
+                summary = content.summary,
+                onCompleted = { completed[0] = true }
+            )
+            Step.Vocabulary -> VocabularyStep(
+                items = content.vocabulary,
+                onCompleted = { completed[1] = true }
+            )
+            Step.Grammar -> GrammarStep(
+                tables = content.grammarTables,
+                onCompleted = { completed[2] = true }
+            )
+            Step.Flashcards -> FlashcardsStep(
+                cards = content.flashcards,
+                onCompleted = { completed[3] = true }
+            )
+            Step.Exercises -> ExercisesStep(
+                exercises = content.practiceExercises,
+                onCompleted = { completed[4] = true }
+            )
+            Step.Speaking -> SpeakingStep(
+                lines = content.speakingPractice,
+                onCompleted = { completed[5] = true }
+            )
+            Step.Final -> FinalQuizStep(
+                content = content,
+                onCompleted = { completed[6] = true }
+            )
         }
 
         Spacer(Modifier.height(8.dp))
