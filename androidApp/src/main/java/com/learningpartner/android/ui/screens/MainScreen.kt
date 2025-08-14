@@ -16,6 +16,7 @@ import org.koin.androidx.compose.koinViewModel
 fun MainScreen() {
     val authViewModel: AuthViewModel = koinViewModel()
     val studentViewModel: StudentViewModel = koinViewModel()
+    val selectedSession by studentViewModel.selectedSession.collectAsState()
     
     var selectedTab by remember { mutableStateOf(0) }
     
@@ -37,31 +38,33 @@ fun MainScreen() {
             )
         },
         bottomBar = {
-            NavigationBar {
-                NavigationBarItem(
-                    icon = { Icon(Icons.Default.Dashboard, contentDescription = "Dashboard") },
-                    label = { Text("Dashboard") },
-                    selected = selectedTab == 0,
-                    onClick = { selectedTab = 0 }
-                )
-                NavigationBarItem(
-                    icon = { Icon(Icons.Default.Class, contentDescription = "Classes") },
-                    label = { Text("Classes") },
-                    selected = selectedTab == 1,
-                    onClick = { selectedTab = 1 }
-                )
-                NavigationBarItem(
-                    icon = { Icon(Icons.Default.VideoLibrary, contentDescription = "Sessions") },
-                    label = { Text("Sessions") },
-                    selected = selectedTab == 2,
-                    onClick = { selectedTab = 2 }
-                )
-                NavigationBarItem(
-                    icon = { Icon(Icons.Default.Assessment, contentDescription = "Progress") },
-                    label = { Text("Progress") },
-                    selected = selectedTab == 3,
-                    onClick = { selectedTab = 3 }
-                )
+            if (selectedSession == null) {
+                NavigationBar {
+                    NavigationBarItem(
+                        icon = { Icon(Icons.Default.Dashboard, contentDescription = "Dashboard") },
+                        label = { Text("Dashboard") },
+                        selected = selectedTab == 0,
+                        onClick = { selectedTab = 0 }
+                    )
+                    NavigationBarItem(
+                        icon = { Icon(Icons.Default.Class, contentDescription = "Classes") },
+                        label = { Text("Classes") },
+                        selected = selectedTab == 1,
+                        onClick = { selectedTab = 1 }
+                    )
+                    NavigationBarItem(
+                        icon = { Icon(Icons.Default.VideoLibrary, contentDescription = "Sessions") },
+                        label = { Text("Sessions") },
+                        selected = selectedTab == 2,
+                        onClick = { selectedTab = 2 }
+                    )
+                    NavigationBarItem(
+                        icon = { Icon(Icons.Default.Assessment, contentDescription = "Progress") },
+                        label = { Text("Progress") },
+                        selected = selectedTab == 3,
+                        onClick = { selectedTab = 3 }
+                    )
+                }
             }
         }
     ) { paddingValues ->
@@ -70,11 +73,15 @@ fun MainScreen() {
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            when (selectedTab) {
-                0 -> DashboardScreen()
-                1 -> ClassesScreen()
-                2 -> SessionsScreen()
-                3 -> ProgressScreen()
+            if (selectedSession != null) {
+                SessionDetailScreen()
+            } else {
+                when (selectedTab) {
+                    0 -> DashboardScreen()
+                    1 -> ClassesScreen()
+                    2 -> SessionsScreen()
+                    3 -> ProgressScreen()
+                }
             }
         }
     }

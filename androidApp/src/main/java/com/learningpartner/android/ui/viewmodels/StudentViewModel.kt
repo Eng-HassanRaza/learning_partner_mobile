@@ -131,6 +131,10 @@ class StudentViewModel(
         }
     }
     
+    fun clearSelectedSession() {
+        _selectedSession.value = null
+    }
+    
     fun loadVocabulary(contentId: Int) {
         viewModelScope.launch {
             _isLoading.value = true
