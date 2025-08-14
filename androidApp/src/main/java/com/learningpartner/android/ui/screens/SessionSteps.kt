@@ -24,6 +24,11 @@ fun SessionSteps(title: String, content: SessionContent) {
         mutableStateListOf<Boolean>().apply { repeat(steps.size) { add(false) } }
     }
 
+    // Guard against out-of-bounds step index
+    LaunchedEffect(steps.size) {
+        if (currentStep !in steps.indices) currentStep = 0
+    }
+
     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(text = title, style = MaterialTheme.typography.headlineSmall)
 
@@ -58,35 +63,50 @@ fun SessionSteps(title: String, content: SessionContent) {
 
         Divider()
 
-        when (steps[currentStep]) {
-            Step.Summary -> SummaryStep(
-                summary = content.summary,
-                onCompleted = { completed[0] = true }
-            )
-            Step.Vocabulary -> VocabularyStep(
-                items = content.vocabulary,
-                onCompleted = { completed[1] = true }
-            )
-            Step.Grammar -> GrammarStep(
-                tables = content.grammarTables,
-                onCompleted = { completed[2] = true }
-            )
-            Step.Flashcards -> FlashcardsStep(
-                cards = content.flashcards,
-                onCompleted = { completed[3] = true }
-            )
-            Step.Exercises -> ExercisesStep(
-                exercises = content.practiceExercises,
-                onCompleted = { completed[4] = true }
-            )
-            Step.Speaking -> SpeakingStep(
-                lines = content.speakingPractice,
-                onCompleted = { completed[5] = true }
-            )
-            Step.Final -> FinalQuizStep(
-                content = content,
-                onCompleted = { completed[6] = true }
-            )
+        // Render step content safely
+        val renderStep: @Composable () -> Unit = @Composable {
+            when (steps[currentStep]) {
+                Step.Summary -> SummaryStep(
+                    summary = content.summary,
+                    onCompleted = { completed[0] = true }
+                )
+                Step.Vocabulary -> VocabularyStep(
+                    items = content.vocabulary,
+                    onCompleted = { completed[1] = true }
+                )
+                Step.Grammar -> GrammarStep(
+                    tables = content.grammarTables,
+                    onCompleted = { completed[2] = true }
+                )
+                Step.Flashcards -> FlashcardsStep(
+                    cards = content.flashcards,
+                    onCompleted = { completed[3] = true }
+                )
+                Step.Exercises -> ExercisesStep(
+                    exercises = content.practiceExercises,
+                    onCompleted = { completed[4] = true }
+                )
+                Step.Speaking -> SpeakingStep(
+                    lines = content.speakingPractice,
+                    onCompleted = { completed[5] = true }
+                )
+                Step.Final -> FinalQuizStep(
+                    content = content,
+                    onCompleted = { completed[6] = true }
+                )
+            }
+        }
+
+        try {
+            renderStep()
+        } catch (t: Throwable) {
+            // Fallback UI instead of crashing
+            Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)) {
+                Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("Something went wrong rendering this step.", color = MaterialTheme.colorScheme.onErrorContainer)
+                    Text("${t::class.simpleName}: ${t.message}", color = MaterialTheme.colorScheme.onErrorContainer)
+                }
+            }
         }
 
         Spacer(Modifier.height(8.dp))
@@ -101,7 +121,7 @@ fun SessionSteps(title: String, content: SessionContent) {
             ) { Text("Back") }
             Button(
                 onClick = { if (currentStep < steps.lastIndex) currentStep++ },
-                enabled = completed[currentStep]
+                enabled = completed.getOrNull(currentStep) == true
             ) { Text(if (currentStep == steps.lastIndex) "Finish" else "Next") }
         }
     }
