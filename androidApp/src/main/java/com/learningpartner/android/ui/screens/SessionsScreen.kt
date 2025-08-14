@@ -217,10 +217,10 @@ fun SessionCard(
                             )
                         )
                     }
-                    if (content.exercises.isNotEmpty()) {
+                    if (content.practiceExercises.isNotEmpty()) {
                         AssistChip(
                             onClick = { },
-                            label = { Text("Exercises (${content.exercises.size})") },
+                            label = { Text("Exercises (${content.practiceExercises.size})") },
                             colors = AssistChipDefaults.assistChipColors(
                                 containerColor = MaterialTheme.colorScheme.secondaryContainer
                             )
