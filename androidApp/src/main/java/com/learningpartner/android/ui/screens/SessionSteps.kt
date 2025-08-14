@@ -70,23 +70,23 @@ fun SessionSteps(title: String, content: SessionContent) {
                     onCompleted = { completed[0] = true }
                 )
                 Step.Vocabulary -> VocabularyStep(
-                    items = content.vocabulary,
+                    items = content.vocabulary.orEmpty(),
                     onCompleted = { completed[1] = true }
                 )
                 Step.Grammar -> GrammarStep(
-                    tables = content.grammarTables,
+                    tables = content.grammarTables.orEmpty(),
                     onCompleted = { completed[2] = true }
                 )
                 Step.Flashcards -> FlashcardsStep(
-                    cards = content.flashcards,
+                    cards = content.flashcards.orEmpty(),
                     onCompleted = { completed[3] = true }
                 )
                 Step.Exercises -> ExercisesStep(
-                    exercises = content.practiceExercises,
+                    exercises = content.practiceExercises.orEmpty(),
                     onCompleted = { completed[4] = true }
                 )
                 Step.Speaking -> SpeakingStep(
-                    lines = content.speakingPractice,
+                    lines = content.speakingPractice.orEmpty(),
                     onCompleted = { completed[5] = true }
                 )
                 Step.Final -> FinalQuizStep(
@@ -106,9 +106,10 @@ fun SessionSteps(title: String, content: SessionContent) {
                 onClick = { if (currentStep > 0) currentStep-- },
                 enabled = currentStep > 0
             ) { Text("Back") }
+            val canGoNext = completed.getOrNull(currentStep) == true && currentStep < steps.lastIndex
             Button(
-                onClick = { if (currentStep < steps.lastIndex) currentStep++ },
-                enabled = completed.getOrNull(currentStep) == true
+                onClick = { if (canGoNext) currentStep++ },
+                enabled = canGoNext
             ) { Text(if (currentStep == steps.lastIndex) "Finish" else "Next") }
         }
     }
@@ -129,13 +130,14 @@ private fun SummaryStep(summary: String, onCompleted: () -> Unit) {
 @Composable
 private fun VocabularyStep(items: List<Vocabulary>, onCompleted: () -> Unit) {
     var viewed by rememberSaveable { mutableStateOf(0) }
-    val target = minOf(5, items.size.coerceAtLeast(1))
+    val safeItems = items
+    val target = minOf(5, safeItems.size.coerceAtLeast(1))
     Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxSize()) {
         Text("Vocabulary", style = MaterialTheme.typography.titleMedium)
-        Text("Browse items: $viewed/${items.size}. Review at least $target to continue.")
+        Text("Browse items: $viewed/${safeItems.size}. Review at least $target to continue.")
         Divider()
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxSize()) {
-            items(items, key = { it.id }) { v ->
+            items(safeItems) { v ->
                 Card { 
                     Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text(text = v.word, style = MaterialTheme.typography.titleMedium)
@@ -147,7 +149,7 @@ private fun VocabularyStep(items: List<Vocabulary>, onCompleted: () -> Unit) {
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            OutlinedButton(onClick = { viewed = minOf(items.size, viewed + 3) }) { Text("Mark a few as reviewed") }
+            OutlinedButton(onClick = { viewed = minOf(safeItems.size, viewed + 3) }) { Text("Mark a few as reviewed") }
             Button(onClick = onCompleted, enabled = viewed >= target) { Text("Continue") }
         }
     }
@@ -155,11 +157,12 @@ private fun VocabularyStep(items: List<Vocabulary>, onCompleted: () -> Unit) {
 
 @Composable
 private fun GrammarStep(tables: List<GrammarTable>, onCompleted: () -> Unit) {
+    val safeTables = tables
     Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxSize()) {
         Text("Grammar", style = MaterialTheme.typography.titleMedium)
         Divider()
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxSize()) {
-            items(tables, key = { it.id }) { g ->
+            items(safeTables) { g ->
                 Card {
                     Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                         Text(g.title, style = MaterialTheme.typography.titleMedium)
@@ -178,7 +181,7 @@ private fun GrammarStep(tables: List<GrammarTable>, onCompleted: () -> Unit) {
                 }
             }
         }
-        Button(onClick = onCompleted, enabled = tables.isNotEmpty()) { Text("Continue") }
+        Button(onClick = onCompleted, enabled = safeTables.isNotEmpty()) { Text("Continue") }
     }
 }
 
@@ -186,23 +189,24 @@ private fun GrammarStep(tables: List<GrammarTable>, onCompleted: () -> Unit) {
 private fun FlashcardsStep(cards: List<Flashcard>, onCompleted: () -> Unit) {
     var index by rememberSaveable { mutableStateOf(0) }
     var flipped by rememberSaveable { mutableStateOf(false) }
-    val hasCards = cards.isNotEmpty()
+    val safeCards = cards
+    val hasCards = safeCards.isNotEmpty()
     Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxSize()) {
         Text("Flashcards", style = MaterialTheme.typography.titleMedium)
         if (!hasCards) {
             Text("No flashcards")
         } else {
-            val card = cards[index]
+            val card = safeCards[index.coerceIn(0, safeCards.lastIndex)]
             Card {
                 Column(Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     Text(if (!flipped) card.front else card.back, style = MaterialTheme.typography.headlineSmall)
-                    Text("(${index + 1}/${cards.size})", style = MaterialTheme.typography.bodySmall)
+                    Text("(${index + 1}/${safeCards.size})", style = MaterialTheme.typography.bodySmall)
                 }
             }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedButton(onClick = { flipped = !flipped }) { Text(if (!flipped) "Flip" else "Hide") }
                 OutlinedButton(onClick = { if (index > 0) { index--; flipped = false } }, enabled = index > 0) { Text("Prev") }
-                Button(onClick = { if (index < cards.lastIndex) { index++; flipped = false } else onCompleted() }, enabled = true) { Text(if (index == cards.lastIndex) "Continue" else "Next") }
+                Button(onClick = { if (index < safeCards.lastIndex) { index++; flipped = false } else onCompleted() }, enabled = true) { Text(if (index == safeCards.lastIndex) "Continue" else "Next") }
             }
         }
     }
@@ -214,15 +218,16 @@ private fun ExercisesStep(exercises: List<Exercise>, onCompleted: () -> Unit) {
     var answer by rememberSaveable { mutableStateOf("") }
     var selectedOption by rememberSaveable { mutableStateOf<String?>(null) }
     var feedback by rememberSaveable { mutableStateOf<String?>(null) }
-    val hasExercises = exercises.isNotEmpty()
+    val safeExercises = exercises
+    val hasExercises = safeExercises.isNotEmpty()
 
     fun checkAndAdvance() {
-        val e = exercises[index]
+        val e = safeExercises[index.coerceIn(0, safeExercises.lastIndex)]
         val userAnswer = if (e.options != null && e.type == "multiple_choice") selectedOption ?: "" else answer
         val correct = userAnswer.trim().equals(e.correctAnswer.trim(), ignoreCase = true)
         feedback = if (correct) "Correct!" else "Incorrect. ${e.explanation ?: ""}"
         if (correct) {
-            if (index < exercises.lastIndex) {
+            if (index < safeExercises.lastIndex) {
                 index++
                 answer = ""
                 selectedOption = null
@@ -238,7 +243,7 @@ private fun ExercisesStep(exercises: List<Exercise>, onCompleted: () -> Unit) {
         if (!hasExercises) {
             Text("No exercises available")
         } else {
-            val e = exercises[index]
+            val e = safeExercises[index.coerceIn(0, safeExercises.lastIndex)]
             Card {
                 Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text("Q${index + 1}: ${e.question}")
@@ -259,7 +264,7 @@ private fun ExercisesStep(exercises: List<Exercise>, onCompleted: () -> Unit) {
                     feedback?.let { Text(it, color = MaterialTheme.colorScheme.secondary) }
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         OutlinedButton(onClick = { if (index > 0) { index--; feedback = null; answer = ""; selectedOption = null } }, enabled = index > 0) { Text("Back") }
-                        Button(onClick = { checkAndAdvance() }) { Text(if (index == exercises.lastIndex) "Submit" else "Check") }
+                        Button(onClick = { checkAndAdvance() }) { Text(if (index == safeExercises.lastIndex) "Submit" else "Check") }
                     }
                 }
             }
@@ -269,24 +274,25 @@ private fun ExercisesStep(exercises: List<Exercise>, onCompleted: () -> Unit) {
 
 @Composable
 private fun SpeakingStep(lines: List<String>, onCompleted: () -> Unit) {
-    val practiced = remember { mutableStateListOf<Boolean>().apply { repeat(lines.size) { add(false) } } }
+    val safeLines = lines
+    val practiced = remember { mutableStateListOf<Boolean>().apply { repeat(safeLines.size) { add(false) } } }
     val completedCount = practiced.count { it }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxSize()) {
         Text("Speaking Practice", style = MaterialTheme.typography.titleMedium)
-        Text("Mark each line after you practice it. $completedCount/${lines.size}")
+        Text("Mark each line after you practice it. $completedCount/${safeLines.size}")
         Divider()
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxSize()) {
-            items(lines.indices.toList(), key = { it }) { i ->
+            items(safeLines.indices.toList()) { i ->
                 Card {
                     Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
                         Checkbox(checked = practiced[i], onCheckedChange = { practiced[i] = it })
                         Spacer(Modifier.width(8.dp))
-                        Text(lines[i])
+                        Text(safeLines[i])
                     }
                 }
             }
         }
-        Button(onClick = onCompleted, enabled = lines.isEmpty() || practiced.all { it }) { Text("Continue") }
+        Button(onClick = onCompleted, enabled = safeLines.isEmpty() || practiced.all { it }) { Text("Continue") }
     }
 }
 
