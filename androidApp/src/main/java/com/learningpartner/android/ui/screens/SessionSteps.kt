@@ -18,7 +18,7 @@ private enum class Step { Summary, Vocabulary, Grammar, Flashcards, Exercises, S
 fun SessionSteps(title: String, content: SessionContent) {
     val steps = remember { Step.values().toList() }
     var currentStep by rememberSaveable { mutableStateOf(0) }
-    val completed = rememberSaveable {
+    val completed = remember {
         mutableStateListOf<Boolean>().apply { repeat(steps.size) { add(false) } }
     }
 
@@ -26,8 +26,9 @@ fun SessionSteps(title: String, content: SessionContent) {
         Text(text = title, style = MaterialTheme.typography.headlineSmall)
 
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            val fraction = (completed.count { it }.toFloat() / steps.size.coerceAtLeast(1)).coerceIn(0f, 1f)
             LinearProgressIndicator(
-                progress = (completed.count { it }.toFloat() / steps.size),
+                progress = fraction,
                 modifier = Modifier.weight(1f)
             )
             Text("${completed.count { it }}/${steps.size}")
