@@ -2,7 +2,7 @@ package com.learningpartner.shared.domain.models
 
 import kotlinx.serialization.Serializable
 
-@Serializable
+@Serializable(with = VocabularySerializer::class)
 data class Vocabulary(
     val id: Int,
     val word: String,
