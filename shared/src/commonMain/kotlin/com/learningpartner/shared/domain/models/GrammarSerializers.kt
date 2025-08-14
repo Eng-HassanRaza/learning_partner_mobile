@@ -102,25 +102,21 @@ object GrammarTableSerializer : KSerializer<GrammarTable> {
         }
         val rules = rulesArray.mapNotNull { element ->
             val ruleObj = element as? JsonObject ?: return@mapNotNull null
-            GrammarRuleSerializer.deserialize(object : Decoder by decoder {
-                override fun decodeSerializableValue(deserializer: KSerializer<*>): Any {
-                    throw UnsupportedOperationException()
-                }
-            }.let { dec ->
-                // Reuse serializer by passing a fake JsonDecoder is non-trivial here; instead manually map
-                GrammarRule(
-                    id = ruleObj["id"]?.jsonPrimitive?.content?.toIntOrNull() ?: 0,
-                    rule = (ruleObj["rule"] ?: ruleObj["rule_text"] ?: ruleObj["text"])?.jsonPrimitive?.content ?: "",
-                    explanation = (ruleObj["explanation"] ?: ruleObj["explain"] ?: ruleObj["description"])?.jsonPrimitive?.content
-                )
-            })
+            GrammarRule(
+                id = ruleObj["id"]?.jsonPrimitive?.content?.toIntOrNull() ?: 0,
+                rule = (ruleObj["rule"] ?: ruleObj["rule_text"] ?: ruleObj["text"])?.jsonPrimitive?.content ?: "",
+                explanation = (ruleObj["explanation"] ?: ruleObj["explain"] ?: ruleObj["description"])?.jsonPrimitive?.content
+            )
         }
 
         val examplesArray = when (val e = json["examples"]) {
             is JsonArray -> e
             else -> JsonArray(emptyList())
         }
-        val examples = examplesArray.mapNotNull { it.jsonPrimitive.contentOrNull }
+        val examples = examplesArray.mapNotNull { element ->
+            val prim = element.jsonPrimitive
+            if (prim.isString) prim.content else null
+        }
 
         return GrammarTable(
             id = id,
