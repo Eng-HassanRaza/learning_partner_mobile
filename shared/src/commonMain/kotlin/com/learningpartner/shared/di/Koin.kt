@@ -6,7 +6,6 @@ import com.learningpartner.shared.data.repositories.AuthRepositoryImpl
 import com.learningpartner.shared.data.repositories.StudentRepositoryImpl
 import com.learningpartner.shared.domain.repositories.AuthRepository
 import com.learningpartner.shared.domain.repositories.StudentRepository
-import com.russhwolf.settings.Settings
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
@@ -19,7 +18,7 @@ fun initKoin(appDeclaration: KoinAppDeclaration = {}) =
 
 val sharedModule = module {
     // Settings
-    single<Settings> { Settings() }
+    single<com.russhwolf.settings.Settings> { com.russhwolf.settings.Settings() }
     
     // API
     single { AuthApi() }

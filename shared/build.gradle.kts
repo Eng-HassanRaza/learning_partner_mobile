@@ -29,6 +29,7 @@ kotlin {
         val kotlinxCoroutinesVersion = "1.7.3"
         val koinVersion = "3.5.0"
         val realmVersion = "1.11.0"
+        val settingsVersion = "1.0.0"
 
         val commonMain by getting {
             dependencies {
@@ -59,7 +60,8 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.1")
                 
                 // Settings
-                implementation("com.russhwolf:multiplatform-settings:1.0.0")
+                implementation("com.russhwolf:multiplatform-settings:$settingsVersion")
+                implementation("com.russhwolf:multiplatform-settings-no-arg:$settingsVersion")
                 
                 // Realm for local storage
                 implementation("io.realm.kotlin:library-base:$realmVersion")
@@ -87,7 +89,6 @@ kotlin {
             }
         }
         
-        // Only create iOS source sets if iOS targets are enabled
         if (project.findProperty("enable.ios.targets") == "true") {
             val iosX64Main by getting
             val iosArm64Main by getting
