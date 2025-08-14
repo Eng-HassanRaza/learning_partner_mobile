@@ -11,5 +11,5 @@ plugins {
 // Repository configuration moved to settings.gradle.kts
 
 tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
+    delete(layout.buildDirectory)
 } 

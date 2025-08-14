@@ -3,10 +3,10 @@
 echo "🚀 Starting lightweight development build..."
 
 # Run only essential tasks for local development
-./gradlew clean
-./gradlew shared:compileKotlinMetadata
-./gradlew androidApp:compileDebugKotlin
-./gradlew test
+./gradlew clean --stacktrace
+./gradlew shared:compileKotlinMetadata --stacktrace
+./gradlew androidApp:compileDebugKotlin --stacktrace
+./gradlew test --stacktrace
 
 echo "✅ Development build completed!"
 echo "📱 For full builds, check GitHub Actions"
