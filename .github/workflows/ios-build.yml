@@ -10,6 +10,10 @@ jobs:
   ios-build:
     runs-on: macos-latest
     
+    env:
+      KOTLIN_NATIVE_IGNORE_ILLEGAL_MULTIPLATFORM_MODULES: 1
+      KOTLIN_NATIVE_IGNORE_ILLEGAL_MULTIPLATFORM_MODULES_WARNING: 1
+    
     steps:
     - name: Checkout code
       uses: actions/checkout@v4

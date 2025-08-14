@@ -9,12 +9,14 @@ plugins {
 kotlin {
     androidTarget()
     
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach {
-        it.binaries.framework {
+    // Simplified iOS targets for better CI compatibility
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+    
+    // Configure framework for all iOS targets
+    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>().configureEach {
+        binaries.framework {
             baseName = "shared"
         }
     }
