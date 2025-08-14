@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Learning Partner</string>
+    <string name="login">Login</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="classes">Classes</string>
+    <string name="sessions">Sessions</string>
+    <string name="vocabulary">Vocabulary</string>
+    <string name="grammar">Grammar</string>
+    <string name="exercises">Exercises</string>
+    <string name="flashcards">Flashcards</string>
+    <string name="progress">Progress</string>
+    <string name="logout">Logout</string>
+    <string name="loading">Loading...</string>
+    <string name="error">Error</string>
+    <string name="retry">Retry</string>
+</resources> 
