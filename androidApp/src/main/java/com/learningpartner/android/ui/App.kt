@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.learningpartner.android.ui.screens.LoginScreen
 import com.learningpartner.android.ui.screens.MainScreen
@@ -19,13 +21,10 @@ fun App() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
+            val isLoggedIn by authViewModel.isLoggedIn.collectAsState()
             when {
-                authViewModel.isLoggedIn.value -> {
-                    MainScreen()
-                }
-                else -> {
-                    LoginScreen()
-                }
+                isLoggedIn -> MainScreen()
+                else -> LoginScreen()
             }
         }
     }
