@@ -180,7 +180,7 @@ fun LoginScreen() {
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "API URL: https://cb64f97bbe57.ngrok-free.app/api/v1/",
+                    text = "API URL: https://d24ddb36a524.ngrok-free.app/api/v1/",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )

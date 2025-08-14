@@ -11,7 +11,7 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 
 object ApiClient {
-    private const val BASE_URL = "https://cb64f97bbe57.ngrok-free.app/api/v1/"
+    private const val BASE_URL = "https://d24ddb36a524.ngrok-free.app/api/v1/"
     
     val client = HttpClient {
         install(HttpCookies) {

@@ -88,7 +88,7 @@ class AuthViewModel(
             
             try {
                 // Simple test to see if we can reach the API
-                val testUrl = "https://cb64f97bbe57.ngrok-free.app/api/v1/"
+                val testUrl = "https://d24ddb36a524.ngrok-free.app/api/v1/"
                 println("🔗 Testing URL: $testUrl")
                 
                 // This will be handled by the AuthApi
