@@ -151,26 +151,23 @@ fun ClassCard(
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    if (classItem.description != null) {
+                    val desc = classItem.description
+                    if (desc != null) {
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = classItem.description,
+                            text = desc,
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
-                Chip(
+                AssistChip(
                     onClick = { },
-                    colors = ChipDefaults.chipColors(
+                    label = { Text(text = classItem.level.levelCode, style = MaterialTheme.typography.bodySmall) },
+                    colors = AssistChipDefaults.assistChipColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer
                     )
-                ) {
-                    Text(
-                        text = classItem.level.levelCode,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
+                )
             }
             
             Spacer(modifier = Modifier.height(12.dp))

@@ -256,27 +256,4 @@ fun StatItem(
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
-}
-
-@Composable
-fun StatusChip(status: String) {
-    val (backgroundColor, textColor) = when (status.lowercase()) {
-        "completed" -> MaterialTheme.colorScheme.primaryContainer to MaterialTheme.colorScheme.onPrimaryContainer
-        "processing" -> MaterialTheme.colorScheme.tertiaryContainer to MaterialTheme.colorScheme.onTertiaryContainer
-        "failed" -> MaterialTheme.colorScheme.errorContainer to MaterialTheme.colorScheme.onErrorContainer
-        else -> MaterialTheme.colorScheme.surfaceVariant to MaterialTheme.colorScheme.onSurfaceVariant
-    }
-    
-    Chip(
-        onClick = { },
-        colors = ChipDefaults.chipColors(
-            containerColor = backgroundColor
-        )
-    ) {
-        Text(
-            text = status.capitalize(),
-            style = MaterialTheme.typography.bodySmall,
-            color = textColor
-        )
-    }
 } 

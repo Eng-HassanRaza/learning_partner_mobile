@@ -196,7 +196,7 @@ fun SessionCard(
                 }
             }
             
-            if (session.content != null) {
+            session.content?.let { content ->
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     text = "Content Available:",
@@ -208,44 +208,32 @@ fun SessionCard(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    if (session.content.vocabulary.isNotEmpty()) {
-                        Chip(
+                    if (content.vocabulary.isNotEmpty()) {
+                        AssistChip(
                             onClick = { },
-                            colors = ChipDefaults.chipColors(
+                            label = { Text("Vocabulary (${content.vocabulary.size})") },
+                            colors = AssistChipDefaults.assistChipColors(
                                 containerColor = MaterialTheme.colorScheme.secondaryContainer
                             )
-                        ) {
-                            Text(
-                                text = "Vocabulary (${session.content.vocabulary.size})",
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                        }
+                        )
                     }
-                    if (session.content.exercises.isNotEmpty()) {
-                        Chip(
+                    if (content.exercises.isNotEmpty()) {
+                        AssistChip(
                             onClick = { },
-                            colors = ChipDefaults.chipColors(
+                            label = { Text("Exercises (${content.exercises.size})") },
+                            colors = AssistChipDefaults.assistChipColors(
                                 containerColor = MaterialTheme.colorScheme.secondaryContainer
                             )
-                        ) {
-                            Text(
-                                text = "Exercises (${session.content.exercises.size})",
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                        }
+                        )
                     }
-                    if (session.content.grammarTables.isNotEmpty()) {
-                        Chip(
+                    if (content.grammarTables.isNotEmpty()) {
+                        AssistChip(
                             onClick = { },
-                            colors = ChipDefaults.chipColors(
+                            label = { Text("Grammar (${content.grammarTables.size})") },
+                            colors = AssistChipDefaults.assistChipColors(
                                 containerColor = MaterialTheme.colorScheme.secondaryContainer
                             )
-                        ) {
-                            Text(
-                                text = "Grammar (${session.content.grammarTables.size})",
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                        }
+                        )
                     }
                 }
             }
@@ -262,16 +250,11 @@ fun StatusChip(status: String) {
         else -> MaterialTheme.colorScheme.surfaceVariant to MaterialTheme.colorScheme.onSurfaceVariant
     }
     
-    Chip(
+    AssistChip(
         onClick = { },
-        colors = ChipDefaults.chipColors(
+        label = { Text(status.replaceFirstChar { it.uppercase() }) },
+        colors = AssistChipDefaults.assistChipColors(
             containerColor = backgroundColor
         )
-    ) {
-        Text(
-            text = status.capitalize(),
-            style = MaterialTheme.typography.bodySmall,
-            color = textColor
-        )
-    }
+    )
 } 
