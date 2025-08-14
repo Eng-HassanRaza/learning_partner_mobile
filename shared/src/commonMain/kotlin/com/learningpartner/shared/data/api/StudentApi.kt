@@ -3,6 +3,7 @@ package com.learningpartner.shared.data.api
 import com.learningpartner.shared.domain.models.*
 import io.ktor.client.request.*
 import io.ktor.client.call.*
+import com.learningpartner.shared.domain.models.PaginatedResponse
 
 class StudentApi {
     private val client = ApiClient.client
@@ -13,7 +14,8 @@ class StudentApi {
     }
     
     suspend fun getClasses(): List<Class> {
-        return client.get("${baseUrl}student/classes/").body()
+        val response: PaginatedResponse<Class> = client.get("${baseUrl}student/classes/").body()
+        return response.results
     }
     
     suspend fun getClassDetails(classId: Int): Class {
@@ -21,7 +23,8 @@ class StudentApi {
     }
     
     suspend fun getSessions(): List<SessionTranscription> {
-        return client.get("${baseUrl}student/sessions/").body()
+        val response: PaginatedResponse<SessionTranscription> = client.get("${baseUrl}student/sessions/").body()
+        return response.results
     }
     
     suspend fun getSessionDetails(classId: Int, sessionId: Int): SessionTranscription {
