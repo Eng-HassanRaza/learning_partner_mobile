@@ -3,6 +3,7 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 
@@ -13,7 +14,10 @@ dependencyResolutionManagement {
         mavenCentral()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-        ivy("https://download.jetbrains.com/teamcity-repository")
+        maven("https://download.jetbrains.com/teamcity-repository")
+        maven("https://kotlin.bintray.com/kotlin-native")
+        maven("https://dl.bintray.com/kotlin/kotlin-dev")
+        maven("https://dl.bintray.com/kotlin/kotlin-eap")
     }
 }
 

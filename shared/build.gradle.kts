@@ -9,7 +9,7 @@ plugins {
 kotlin {
     androidTarget()
     
-    // Simplified iOS targets for better CI compatibility
+    // iOS targets - simplified configuration
     iosX64()
     iosArm64()
     iosSimulatorArm64()

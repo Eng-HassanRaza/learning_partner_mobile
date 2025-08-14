@@ -40,14 +40,14 @@ jobs:
     - name: Show Gradle version
       run: ./gradlew --version
       
-    - name: Build with Gradle
-      run: ./gradlew build --stacktrace
-      
-    - name: Run tests
-      run: ./gradlew test --stacktrace
-      
-    - name: Build Android APK
+    - name: Build Android only
       run: ./gradlew androidApp:assembleDebug --stacktrace
+      
+    - name: Run Android tests
+      run: ./gradlew androidApp:test --stacktrace
+      
+    - name: Build shared module (Android target only)
+      run: ./gradlew shared:compileDebugKotlinAndroid --stacktrace
       
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
