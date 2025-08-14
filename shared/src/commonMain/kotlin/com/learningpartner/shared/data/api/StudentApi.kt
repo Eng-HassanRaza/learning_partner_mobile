@@ -72,4 +72,49 @@ class StudentApi(
     suspend fun getProgress(): List<Any> {
         return httpClient.get("${baseUrl}student/progress/").body()
     }
+
+    // New endpoints for gated interactive session
+    suspend fun getSessionProgress(sessionId: Int): SessionProgress {
+        return httpClient.get("${baseUrl}student/sessions/$sessionId/progress/").body()
+    }
+
+    suspend fun updateSessionProgress(sessionId: Int, update: SessionProgressUpdate): SessionProgress {
+        return httpClient.put("${baseUrl}student/sessions/$sessionId/progress/") {
+            setBody(update)
+        }.body()
+    }
+
+    suspend fun submitExercise(contentId: Int, index: Int, request: ExerciseSubmissionRequest): ExerciseSubmissionResponse {
+        return httpClient.post("${baseUrl}student/content/$contentId/exercises/$index/submit/") {
+            setBody(request)
+        }.body()
+    }
+
+    suspend fun reviewFlashcard(contentId: Int, index: Int, request: FlashcardReviewRequest): FlashcardReviewResponse {
+        return httpClient.post("${baseUrl}student/content/$contentId/flashcards/$index/review/") {
+            setBody(request)
+        }.body()
+    }
+
+    suspend fun logSpeakingAttempt(sessionId: Int, request: SpeakingAttemptRequest): SpeakingAttemptResponse {
+        return httpClient.post("${baseUrl}student/sessions/$sessionId/speaking/attempt/") {
+            setBody(request)
+        }.body()
+    }
+
+    suspend fun getQuiz(contentId: Int): QuizResponse {
+        return httpClient.get("${baseUrl}student/content/$contentId/quiz/").body()
+    }
+
+    suspend fun submitQuiz(contentId: Int, request: QuizSubmitRequest): QuizSubmitResponse {
+        return httpClient.post("${baseUrl}student/content/$contentId/submit_quiz/") {
+            setBody(request)
+        }.body()
+    }
+
+    suspend fun completeSession(sessionId: Int, request: CompleteSessionRequest): CompleteSessionResponse {
+        return httpClient.post("${baseUrl}student/sessions/$sessionId/complete/") {
+            setBody(request)
+        }.body()
+    }
 } 

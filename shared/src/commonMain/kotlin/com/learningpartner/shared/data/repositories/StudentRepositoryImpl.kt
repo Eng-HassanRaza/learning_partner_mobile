@@ -142,4 +142,69 @@ class StudentRepositoryImpl(
             Result.failure(e)
         }
     }
+
+    // New
+    override suspend fun getSessionProgress(sessionId: Int): Result<SessionProgress> {
+        return try {
+            Result.success(studentApi.getSessionProgress(sessionId))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun updateSessionProgress(sessionId: Int, update: SessionProgressUpdate): Result<SessionProgress> {
+        return try {
+            Result.success(studentApi.updateSessionProgress(sessionId, update))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun submitExercise(contentId: Int, index: Int, request: ExerciseSubmissionRequest): Result<ExerciseSubmissionResponse> {
+        return try {
+            Result.success(studentApi.submitExercise(contentId, index, request))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun reviewFlashcard(contentId: Int, index: Int, request: FlashcardReviewRequest): Result<FlashcardReviewResponse> {
+        return try {
+            Result.success(studentApi.reviewFlashcard(contentId, index, request))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun logSpeakingAttempt(sessionId: Int, request: SpeakingAttemptRequest): Result<SpeakingAttemptResponse> {
+        return try {
+            Result.success(studentApi.logSpeakingAttempt(sessionId, request))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getQuiz(contentId: Int): Result<QuizResponse> {
+        return try {
+            Result.success(studentApi.getQuiz(contentId))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun submitQuiz(contentId: Int, request: QuizSubmitRequest): Result<QuizSubmitResponse> {
+        return try {
+            Result.success(studentApi.submitQuiz(contentId, request))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun completeSession(sessionId: Int, request: CompleteSessionRequest): Result<CompleteSessionResponse> {
+        return try {
+            Result.success(studentApi.completeSession(sessionId, request))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 } 

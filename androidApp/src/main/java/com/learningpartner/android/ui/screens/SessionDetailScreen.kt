@@ -40,17 +40,18 @@ fun SessionDetailScreen() {
             if (session == null) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             } else {
-                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text(text = session!!.classSession.name, style = MaterialTheme.typography.headlineSmall)
-                    Text(text = "Status: ${session!!.processingStatus}")
-                    session!!.content?.let { content ->
-                        Divider()
-                        Text(text = "Summary: ${content.summary}")
-                        Text(text = "Vocabulary: ${content.vocabulary.size}")
-                        Text(text = "Exercises: ${content.practiceExercises.size}")
-                        Text(text = "Grammar tables: ${content.grammarTables.size}")
-                        Text(text = "Flashcards: ${content.flashcards.size}")
-                    } ?: Text(text = "No content available yet.")
+                val content = session!!.content
+                if (content == null) {
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Text(text = session!!.classSession.name, style = MaterialTheme.typography.headlineSmall)
+                        Text(text = "Status: ${session!!.processingStatus}")
+                        Text(text = "No content available yet.")
+                    }
+                } else {
+                    SessionSteps(
+                        title = session!!.classSession.name,
+                        content = content
+                    )
                 }
             }
         }

@@ -14,5 +14,6 @@ data class SessionTranscription(
     val videoDuration: Int,
     @SerialName("language_detected")
     val languageDetected: String,
-    val content: SessionContent? = null
+    val content: SessionContent? = null,
+    val gating: GatingConfig? = null
 ) 

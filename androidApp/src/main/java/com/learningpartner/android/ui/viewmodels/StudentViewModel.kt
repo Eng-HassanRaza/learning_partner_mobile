@@ -45,6 +45,10 @@ class StudentViewModel(
     
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
+
+    // Session progress state
+    private val _sessionProgress = MutableStateFlow<SessionProgress?>(null)
+    val sessionProgress: StateFlow<SessionProgress?> = _sessionProgress.asStateFlow()
     
     fun loadDashboard() {
         viewModelScope.launch {
@@ -122,6 +126,8 @@ class StudentViewModel(
             studentRepository.getSessionDetails(classId, sessionId)
                 .onSuccess { session ->
                     _selectedSession.value = session
+                    // load server progress if available
+                    loadSessionProgress(session.id)
                 }
                 .onFailure { exception ->
                     _error.value = exception.message ?: "Failed to load session details"
@@ -133,6 +139,7 @@ class StudentViewModel(
     
     fun clearSelectedSession() {
         _selectedSession.value = null
+        _sessionProgress.value = null
     }
     
     fun loadVocabulary(contentId: Int) {
@@ -200,6 +207,74 @@ class StudentViewModel(
                 }
             
             _isLoading.value = false
+        }
+    }
+
+    // Progress APIs
+    fun loadSessionProgress(sessionId: Int) {
+        viewModelScope.launch {
+            studentRepository.getSessionProgress(sessionId)
+                .onSuccess { progress -> _sessionProgress.value = progress }
+                .onFailure { /* keep null; UI can start at step 0 */ }
+        }
+    }
+
+    fun updateSessionProgress(sessionId: Int, update: SessionProgressUpdate, onDone: ((SessionProgress) -> Unit)? = null) {
+        viewModelScope.launch {
+            studentRepository.updateSessionProgress(sessionId, update)
+                .onSuccess { progress ->
+                    _sessionProgress.value = progress
+                    onDone?.invoke(progress)
+                }
+                .onFailure { e -> _error.value = e.message ?: "Failed to update progress" }
+        }
+    }
+
+    fun submitExercise(contentId: Int, index: Int, answer: String, onResult: (ExerciseSubmissionResponse) -> Unit) {
+        viewModelScope.launch {
+            studentRepository.submitExercise(contentId, index, ExerciseSubmissionRequest(answer))
+                .onSuccess(onResult)
+                .onFailure { e -> _error.value = e.message ?: "Failed to submit exercise" }
+        }
+    }
+
+    fun reviewFlashcard(contentId: Int, index: Int, quality: Int, timeTakenMs: Long, onResult: (FlashcardReviewResponse) -> Unit) {
+        viewModelScope.launch {
+            studentRepository.reviewFlashcard(contentId, index, FlashcardReviewRequest(quality, timeTakenMs))
+                .onSuccess(onResult)
+                .onFailure { e -> _error.value = e.message ?: "Failed to review flashcard" }
+        }
+    }
+
+    fun logSpeakingAttempt(sessionId: Int, line: String, selfRating: Int, durationMs: Long?, onResult: (SpeakingAttemptResponse) -> Unit) {
+        viewModelScope.launch {
+            studentRepository.logSpeakingAttempt(sessionId, SpeakingAttemptRequest(line, selfRating, durationMs))
+                .onSuccess(onResult)
+                .onFailure { e -> _error.value = e.message ?: "Failed to log speaking attempt" }
+        }
+    }
+
+    fun getQuiz(contentId: Int, onResult: (QuizResponse) -> Unit) {
+        viewModelScope.launch {
+            studentRepository.getQuiz(contentId)
+                .onSuccess(onResult)
+                .onFailure { e -> _error.value = e.message ?: "Failed to load quiz" }
+        }
+    }
+
+    fun submitQuiz(contentId: Int, answers: Map<String, String>, onResult: (QuizSubmitResponse) -> Unit) {
+        viewModelScope.launch {
+            studentRepository.submitQuiz(contentId, QuizSubmitRequest(answers))
+                .onSuccess(onResult)
+                .onFailure { e -> _error.value = e.message ?: "Failed to submit quiz" }
+        }
+    }
+
+    fun completeSession(sessionId: Int, finalScore: Int?, onResult: (CompleteSessionResponse) -> Unit) {
+        viewModelScope.launch {
+            studentRepository.completeSession(sessionId, CompleteSessionRequest(finalScore))
+                .onSuccess(onResult)
+                .onFailure { e -> _error.value = e.message ?: "Failed to complete session" }
         }
     }
     

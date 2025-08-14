@@ -18,4 +18,14 @@ interface StudentRepository {
     suspend fun acceptInvitation(invitationId: Int): Result<String>
     suspend fun declineInvitation(invitationId: Int): Result<String>
     suspend fun getProgress(): Result<List<Any>>
+
+    // New for gated interactive session
+    suspend fun getSessionProgress(sessionId: Int): Result<SessionProgress>
+    suspend fun updateSessionProgress(sessionId: Int, update: SessionProgressUpdate): Result<SessionProgress>
+    suspend fun submitExercise(contentId: Int, index: Int, request: ExerciseSubmissionRequest): Result<ExerciseSubmissionResponse>
+    suspend fun reviewFlashcard(contentId: Int, index: Int, request: FlashcardReviewRequest): Result<FlashcardReviewResponse>
+    suspend fun logSpeakingAttempt(sessionId: Int, request: SpeakingAttemptRequest): Result<SpeakingAttemptResponse>
+    suspend fun getQuiz(contentId: Int): Result<QuizResponse>
+    suspend fun submitQuiz(contentId: Int, request: QuizSubmitRequest): Result<QuizSubmitResponse>
+    suspend fun completeSession(sessionId: Int, request: CompleteSessionRequest): Result<CompleteSessionResponse>
 } 
