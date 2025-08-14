@@ -7,7 +7,7 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 
 object ApiClient {
-    private const val BASE_URL = "http://dashboard.localhost:8000/api/v1/"
+    private const val BASE_URL = "https://cb64f97bbe57.ngrok-free.app/api/v1/"
     
     val client = HttpClient {
         install(ContentNegotiation) {
